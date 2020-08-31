@@ -1,0 +1,23 @@
+{
+	"inputDir": "../input",
+	"outputDir": "../output/annotated",
+	"inputUrl": "https://fhir.org",
+	"resourceTypes": [
+		"CarePlan", "CareTeam", "Claim",
+		"Condition", "DiagnosticReport", "Encounter", 
+		"Goal", "Immunization", "Observation", 
+		"Organization", "Patient", "Practitioner", 
+		"Procedure"
+	],
+	"extensions": [
+		"Patient.extension.valueCoding",
+		"Patient.extension.valueString",
+		"Patient.extension.valueCode",
+		"Patient.extension.valueAddress",
+		"Patient.extension.valueDecimal",
+		"Patient.address.extension.valueDecimal"
+	],
+	"recursionLimits": {
+		"Identifier.assigner": 1
+	}
+}

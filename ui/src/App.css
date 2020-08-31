@@ -1,0 +1,85 @@
+.rule-text {
+	margin: 10px;
+    white-space: nowrap;
+}
+
+.field-name {
+
+}
+
+.comparator {
+
+}
+
+.target {
+	
+}
+
+td {
+	/* border: 1px solid black; */
+}
+
+.block-button:hover {
+	color: white !important;
+}
+
+
+.invalid {
+	border: 1px solid red;
+}
+
+.madlib {
+	background-color: lightgray;
+	border-radius: 6%;
+	padding: 6px;
+	margin: 2px;
+}
+
+.madlib.static {
+	background-color: transparent;
+	padding: 0 0 4px 6px;
+	border-bottom: 2px solid gray;
+}
+
+.madlib.invalid {
+	background-color: palevioletred;
+}
+
+.no-caret .dropdown-toggle:after {
+    display: none;
+}
+
+/* .modal.left .modal-dialog,
+.modal.right .modal-dialog {
+	position: fixed;
+	margin: auto;
+	height: 100%;
+	-webkit-transform: translate3d(0%, 0, 0);
+		-ms-transform: translate3d(0%, 0, 0);
+		 -o-transform: translate3d(0%, 0, 0);
+			transform: translate3d(0%, 0, 0);
+}
+
+.modal.left .modal-content,
+.modal.right .modal-content {
+	height: 100%;
+	width: 800px;
+	overflow-y: auto;
+}
+
+.modal.left .modal-body,
+.modal.right .modal-body {
+	padding: 20px;
+}
+
+/* .modal.left.fade .modal-dialog{
+	left: -320px;
+	-webkit-transition: opacity 0.3s linear, left 0.3s ease-out;
+	   -moz-transition: opacity 0.3s linear, left 0.3s ease-out;
+		 -o-transition: opacity 0.3s linear, left 0.3s ease-out;
+			transition: opacity 0.3s linear, left 0.3s ease-out;
+}
+
+.modal.left.fade.in .modal-dialog{
+	left: 0;
+} */

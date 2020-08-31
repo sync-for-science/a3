@@ -1,0 +1,6 @@
+{
+	"projectId": "composed-circle-270115",
+	"dataset": "a3_v2",
+	"dataDir": "../output/annotated",
+	"schemaDir": "../output/bq-schemas"
+}

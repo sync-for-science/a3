@@ -1,0 +1,1740 @@
+[
+  {
+    "name": "active",
+    "type": "BOOLEAN"
+  },
+  {
+    "name": "address",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "fields": [
+      {
+        "name": "city",
+        "type": "STRING"
+      },
+      {
+        "name": "city_aa",
+        "type": "STRING"
+      },
+      {
+        "name": "country",
+        "type": "STRING"
+      },
+      {
+        "name": "country_aa",
+        "type": "STRING"
+      },
+      {
+        "name": "district",
+        "type": "STRING"
+      },
+      {
+        "name": "district_aa",
+        "type": "STRING"
+      },
+      {
+        "name": "id",
+        "type": "STRING"
+      },
+      {
+        "name": "line",
+        "type": "STRING",
+        "mode": "REPEATED"
+      },
+      {
+        "name": "line_aa",
+        "type": "STRING",
+        "mode": "REPEATED"
+      },
+      {
+        "name": "period",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "end",
+            "type": "STRING"
+          },
+          {
+            "name": "end_aa",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "start",
+                "type": "TIMESTAMP"
+              },
+              {
+                "name": "end",
+                "type": "TIMESTAMP"
+              }
+            ]
+          },
+          {
+            "name": "id",
+            "type": "STRING"
+          },
+          {
+            "name": "start",
+            "type": "STRING"
+          },
+          {
+            "name": "start_aa",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "start",
+                "type": "TIMESTAMP"
+              },
+              {
+                "name": "end",
+                "type": "TIMESTAMP"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "postalCode",
+        "type": "STRING"
+      },
+      {
+        "name": "postalCode_aa",
+        "type": "STRING"
+      },
+      {
+        "name": "state",
+        "type": "STRING"
+      },
+      {
+        "name": "state_aa",
+        "type": "STRING"
+      },
+      {
+        "name": "text",
+        "type": "STRING"
+      },
+      {
+        "name": "text_aa",
+        "type": "STRING"
+      },
+      {
+        "name": "type",
+        "type": "STRING"
+      },
+      {
+        "name": "use",
+        "type": "STRING"
+      }
+    ]
+  },
+  {
+    "name": "alias",
+    "type": "STRING",
+    "mode": "REPEATED"
+  },
+  {
+    "name": "alias_aa",
+    "type": "STRING",
+    "mode": "REPEATED"
+  },
+  {
+    "name": "contact",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "fields": [
+      {
+        "name": "address",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "city",
+            "type": "STRING"
+          },
+          {
+            "name": "city_aa",
+            "type": "STRING"
+          },
+          {
+            "name": "country",
+            "type": "STRING"
+          },
+          {
+            "name": "country_aa",
+            "type": "STRING"
+          },
+          {
+            "name": "district",
+            "type": "STRING"
+          },
+          {
+            "name": "district_aa",
+            "type": "STRING"
+          },
+          {
+            "name": "id",
+            "type": "STRING"
+          },
+          {
+            "name": "line",
+            "type": "STRING",
+            "mode": "REPEATED"
+          },
+          {
+            "name": "line_aa",
+            "type": "STRING",
+            "mode": "REPEATED"
+          },
+          {
+            "name": "period",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "end",
+                "type": "STRING"
+              },
+              {
+                "name": "end_aa",
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "start",
+                    "type": "TIMESTAMP"
+                  },
+                  {
+                    "name": "end",
+                    "type": "TIMESTAMP"
+                  }
+                ]
+              },
+              {
+                "name": "id",
+                "type": "STRING"
+              },
+              {
+                "name": "start",
+                "type": "STRING"
+              },
+              {
+                "name": "start_aa",
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "start",
+                    "type": "TIMESTAMP"
+                  },
+                  {
+                    "name": "end",
+                    "type": "TIMESTAMP"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "postalCode",
+            "type": "STRING"
+          },
+          {
+            "name": "postalCode_aa",
+            "type": "STRING"
+          },
+          {
+            "name": "state",
+            "type": "STRING"
+          },
+          {
+            "name": "state_aa",
+            "type": "STRING"
+          },
+          {
+            "name": "text",
+            "type": "STRING"
+          },
+          {
+            "name": "text_aa",
+            "type": "STRING"
+          },
+          {
+            "name": "type",
+            "type": "STRING"
+          },
+          {
+            "name": "use",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "id",
+        "type": "STRING"
+      },
+      {
+        "name": "name",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "family",
+            "type": "STRING"
+          },
+          {
+            "name": "family_aa",
+            "type": "STRING"
+          },
+          {
+            "name": "given",
+            "type": "STRING",
+            "mode": "REPEATED"
+          },
+          {
+            "name": "given_aa",
+            "type": "STRING",
+            "mode": "REPEATED"
+          },
+          {
+            "name": "id",
+            "type": "STRING"
+          },
+          {
+            "name": "period",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "end",
+                "type": "STRING"
+              },
+              {
+                "name": "end_aa",
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "start",
+                    "type": "TIMESTAMP"
+                  },
+                  {
+                    "name": "end",
+                    "type": "TIMESTAMP"
+                  }
+                ]
+              },
+              {
+                "name": "id",
+                "type": "STRING"
+              },
+              {
+                "name": "start",
+                "type": "STRING"
+              },
+              {
+                "name": "start_aa",
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "start",
+                    "type": "TIMESTAMP"
+                  },
+                  {
+                    "name": "end",
+                    "type": "TIMESTAMP"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "prefix",
+            "type": "STRING",
+            "mode": "REPEATED"
+          },
+          {
+            "name": "prefix_aa",
+            "type": "STRING",
+            "mode": "REPEATED"
+          },
+          {
+            "name": "suffix",
+            "type": "STRING",
+            "mode": "REPEATED"
+          },
+          {
+            "name": "suffix_aa",
+            "type": "STRING",
+            "mode": "REPEATED"
+          },
+          {
+            "name": "text",
+            "type": "STRING"
+          },
+          {
+            "name": "text_aa",
+            "type": "STRING"
+          },
+          {
+            "name": "use",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "purpose",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "coding",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              {
+                "name": "code",
+                "type": "STRING"
+              },
+              {
+                "name": "display",
+                "type": "STRING"
+              },
+              {
+                "name": "display_aa",
+                "type": "STRING"
+              },
+              {
+                "name": "id",
+                "type": "STRING"
+              },
+              {
+                "name": "system",
+                "type": "STRING"
+              },
+              {
+                "name": "userSelected",
+                "type": "BOOLEAN"
+              },
+              {
+                "name": "version",
+                "type": "STRING"
+              },
+              {
+                "name": "version_aa",
+                "type": "STRING"
+              }
+            ]
+          },
+          {
+            "name": "id",
+            "type": "STRING"
+          },
+          {
+            "name": "text",
+            "type": "STRING"
+          },
+          {
+            "name": "text_aa",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "telecom",
+        "type": "RECORD",
+        "mode": "REPEATED",
+        "fields": [
+          {
+            "name": "id",
+            "type": "STRING"
+          },
+          {
+            "name": "period",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "end",
+                "type": "STRING"
+              },
+              {
+                "name": "end_aa",
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "start",
+                    "type": "TIMESTAMP"
+                  },
+                  {
+                    "name": "end",
+                    "type": "TIMESTAMP"
+                  }
+                ]
+              },
+              {
+                "name": "id",
+                "type": "STRING"
+              },
+              {
+                "name": "start",
+                "type": "STRING"
+              },
+              {
+                "name": "start_aa",
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "start",
+                    "type": "TIMESTAMP"
+                  },
+                  {
+                    "name": "end",
+                    "type": "TIMESTAMP"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "rank",
+            "type": "INTEGER"
+          },
+          {
+            "name": "system",
+            "type": "STRING"
+          },
+          {
+            "name": "use",
+            "type": "STRING"
+          },
+          {
+            "name": "value",
+            "type": "STRING"
+          },
+          {
+            "name": "value_aa",
+            "type": "STRING"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "endpoint",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "fields": [
+      {
+        "name": "display",
+        "type": "STRING"
+      },
+      {
+        "name": "display_aa",
+        "type": "STRING"
+      },
+      {
+        "name": "id",
+        "type": "STRING"
+      },
+      {
+        "name": "identifier",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "assigner",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "display",
+                "type": "STRING"
+              },
+              {
+                "name": "display_aa",
+                "type": "STRING"
+              },
+              {
+                "name": "id",
+                "type": "STRING"
+              },
+              {
+                "name": "identifier",
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "id",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "period",
+                    "type": "RECORD",
+                    "fields": [
+                      {
+                        "name": "end",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "end_aa",
+                        "type": "RECORD",
+                        "fields": [
+                          {
+                            "name": "start",
+                            "type": "TIMESTAMP"
+                          },
+                          {
+                            "name": "end",
+                            "type": "TIMESTAMP"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "id",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "start",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "start_aa",
+                        "type": "RECORD",
+                        "fields": [
+                          {
+                            "name": "start",
+                            "type": "TIMESTAMP"
+                          },
+                          {
+                            "name": "end",
+                            "type": "TIMESTAMP"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "system",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "type",
+                    "type": "RECORD",
+                    "fields": [
+                      {
+                        "name": "coding",
+                        "type": "RECORD",
+                        "mode": "REPEATED",
+                        "fields": [
+                          {
+                            "name": "code",
+                            "type": "STRING"
+                          },
+                          {
+                            "name": "display",
+                            "type": "STRING"
+                          },
+                          {
+                            "name": "display_aa",
+                            "type": "STRING"
+                          },
+                          {
+                            "name": "id",
+                            "type": "STRING"
+                          },
+                          {
+                            "name": "system",
+                            "type": "STRING"
+                          },
+                          {
+                            "name": "userSelected",
+                            "type": "BOOLEAN"
+                          },
+                          {
+                            "name": "version",
+                            "type": "STRING"
+                          },
+                          {
+                            "name": "version_aa",
+                            "type": "STRING"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "id",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "text",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "text_aa",
+                        "type": "STRING"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "use",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "value",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "value_aa",
+                    "type": "STRING"
+                  }
+                ]
+              },
+              {
+                "name": "reference",
+                "type": "STRING"
+              },
+              {
+                "name": "reference_id_aa",
+                "type": "STRING"
+              },
+              {
+                "name": "reference_prev_aa",
+                "type": "STRING"
+              },
+              {
+                "name": "type",
+                "type": "STRING"
+              }
+            ]
+          },
+          {
+            "name": "id",
+            "type": "STRING"
+          },
+          {
+            "name": "period",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "end",
+                "type": "STRING"
+              },
+              {
+                "name": "end_aa",
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "start",
+                    "type": "TIMESTAMP"
+                  },
+                  {
+                    "name": "end",
+                    "type": "TIMESTAMP"
+                  }
+                ]
+              },
+              {
+                "name": "id",
+                "type": "STRING"
+              },
+              {
+                "name": "start",
+                "type": "STRING"
+              },
+              {
+                "name": "start_aa",
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "start",
+                    "type": "TIMESTAMP"
+                  },
+                  {
+                    "name": "end",
+                    "type": "TIMESTAMP"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "system",
+            "type": "STRING"
+          },
+          {
+            "name": "type",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "coding",
+                "type": "RECORD",
+                "mode": "REPEATED",
+                "fields": [
+                  {
+                    "name": "code",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "display",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "display_aa",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "id",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "system",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "userSelected",
+                    "type": "BOOLEAN"
+                  },
+                  {
+                    "name": "version",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "version_aa",
+                    "type": "STRING"
+                  }
+                ]
+              },
+              {
+                "name": "id",
+                "type": "STRING"
+              },
+              {
+                "name": "text",
+                "type": "STRING"
+              },
+              {
+                "name": "text_aa",
+                "type": "STRING"
+              }
+            ]
+          },
+          {
+            "name": "use",
+            "type": "STRING"
+          },
+          {
+            "name": "value",
+            "type": "STRING"
+          },
+          {
+            "name": "value_aa",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "reference",
+        "type": "STRING"
+      },
+      {
+        "name": "reference_id_aa",
+        "type": "STRING"
+      },
+      {
+        "name": "reference_prev_aa",
+        "type": "STRING"
+      },
+      {
+        "name": "type",
+        "type": "STRING"
+      }
+    ]
+  },
+  {
+    "name": "id",
+    "type": "STRING"
+  },
+  {
+    "name": "identifier",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "fields": [
+      {
+        "name": "assigner",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "display",
+            "type": "STRING"
+          },
+          {
+            "name": "display_aa",
+            "type": "STRING"
+          },
+          {
+            "name": "id",
+            "type": "STRING"
+          },
+          {
+            "name": "identifier",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "id",
+                "type": "STRING"
+              },
+              {
+                "name": "period",
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "end",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "end_aa",
+                    "type": "RECORD",
+                    "fields": [
+                      {
+                        "name": "start",
+                        "type": "TIMESTAMP"
+                      },
+                      {
+                        "name": "end",
+                        "type": "TIMESTAMP"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "id",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "start",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "start_aa",
+                    "type": "RECORD",
+                    "fields": [
+                      {
+                        "name": "start",
+                        "type": "TIMESTAMP"
+                      },
+                      {
+                        "name": "end",
+                        "type": "TIMESTAMP"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "system",
+                "type": "STRING"
+              },
+              {
+                "name": "type",
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "coding",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                      {
+                        "name": "code",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "display",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "display_aa",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "id",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "system",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "userSelected",
+                        "type": "BOOLEAN"
+                      },
+                      {
+                        "name": "version",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "version_aa",
+                        "type": "STRING"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "id",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "text",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "text_aa",
+                    "type": "STRING"
+                  }
+                ]
+              },
+              {
+                "name": "use",
+                "type": "STRING"
+              },
+              {
+                "name": "value",
+                "type": "STRING"
+              },
+              {
+                "name": "value_aa",
+                "type": "STRING"
+              }
+            ]
+          },
+          {
+            "name": "reference",
+            "type": "STRING"
+          },
+          {
+            "name": "reference_id_aa",
+            "type": "STRING"
+          },
+          {
+            "name": "reference_prev_aa",
+            "type": "STRING"
+          },
+          {
+            "name": "type",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "id",
+        "type": "STRING"
+      },
+      {
+        "name": "period",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "end",
+            "type": "STRING"
+          },
+          {
+            "name": "end_aa",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "start",
+                "type": "TIMESTAMP"
+              },
+              {
+                "name": "end",
+                "type": "TIMESTAMP"
+              }
+            ]
+          },
+          {
+            "name": "id",
+            "type": "STRING"
+          },
+          {
+            "name": "start",
+            "type": "STRING"
+          },
+          {
+            "name": "start_aa",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "start",
+                "type": "TIMESTAMP"
+              },
+              {
+                "name": "end",
+                "type": "TIMESTAMP"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "system",
+        "type": "STRING"
+      },
+      {
+        "name": "type",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "coding",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              {
+                "name": "code",
+                "type": "STRING"
+              },
+              {
+                "name": "display",
+                "type": "STRING"
+              },
+              {
+                "name": "display_aa",
+                "type": "STRING"
+              },
+              {
+                "name": "id",
+                "type": "STRING"
+              },
+              {
+                "name": "system",
+                "type": "STRING"
+              },
+              {
+                "name": "userSelected",
+                "type": "BOOLEAN"
+              },
+              {
+                "name": "version",
+                "type": "STRING"
+              },
+              {
+                "name": "version_aa",
+                "type": "STRING"
+              }
+            ]
+          },
+          {
+            "name": "id",
+            "type": "STRING"
+          },
+          {
+            "name": "text",
+            "type": "STRING"
+          },
+          {
+            "name": "text_aa",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "use",
+        "type": "STRING"
+      },
+      {
+        "name": "value",
+        "type": "STRING"
+      },
+      {
+        "name": "value_aa",
+        "type": "STRING"
+      }
+    ]
+  },
+  {
+    "name": "implicitRules",
+    "type": "STRING"
+  },
+  {
+    "name": "language",
+    "type": "STRING"
+  },
+  {
+    "name": "meta",
+    "type": "RECORD",
+    "fields": [
+      {
+        "name": "id",
+        "type": "STRING"
+      },
+      {
+        "name": "lastUpdated",
+        "type": "STRING"
+      },
+      {
+        "name": "lastUpdated_aa",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "start",
+            "type": "TIMESTAMP"
+          },
+          {
+            "name": "end",
+            "type": "TIMESTAMP"
+          }
+        ]
+      },
+      {
+        "name": "profile",
+        "type": "STRING",
+        "mode": "REPEATED"
+      },
+      {
+        "name": "security",
+        "type": "RECORD",
+        "mode": "REPEATED",
+        "fields": [
+          {
+            "name": "code",
+            "type": "STRING"
+          },
+          {
+            "name": "display",
+            "type": "STRING"
+          },
+          {
+            "name": "display_aa",
+            "type": "STRING"
+          },
+          {
+            "name": "id",
+            "type": "STRING"
+          },
+          {
+            "name": "system",
+            "type": "STRING"
+          },
+          {
+            "name": "userSelected",
+            "type": "BOOLEAN"
+          },
+          {
+            "name": "version",
+            "type": "STRING"
+          },
+          {
+            "name": "version_aa",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "source",
+        "type": "STRING"
+      },
+      {
+        "name": "tag",
+        "type": "RECORD",
+        "mode": "REPEATED",
+        "fields": [
+          {
+            "name": "code",
+            "type": "STRING"
+          },
+          {
+            "name": "display",
+            "type": "STRING"
+          },
+          {
+            "name": "display_aa",
+            "type": "STRING"
+          },
+          {
+            "name": "id",
+            "type": "STRING"
+          },
+          {
+            "name": "system",
+            "type": "STRING"
+          },
+          {
+            "name": "userSelected",
+            "type": "BOOLEAN"
+          },
+          {
+            "name": "version",
+            "type": "STRING"
+          },
+          {
+            "name": "version_aa",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "versionId",
+        "type": "STRING"
+      }
+    ]
+  },
+  {
+    "name": "name",
+    "type": "STRING"
+  },
+  {
+    "name": "name_aa",
+    "type": "STRING"
+  },
+  {
+    "name": "partOf",
+    "type": "RECORD",
+    "fields": [
+      {
+        "name": "display",
+        "type": "STRING"
+      },
+      {
+        "name": "display_aa",
+        "type": "STRING"
+      },
+      {
+        "name": "id",
+        "type": "STRING"
+      },
+      {
+        "name": "identifier",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "assigner",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "display",
+                "type": "STRING"
+              },
+              {
+                "name": "display_aa",
+                "type": "STRING"
+              },
+              {
+                "name": "id",
+                "type": "STRING"
+              },
+              {
+                "name": "identifier",
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "id",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "period",
+                    "type": "RECORD",
+                    "fields": [
+                      {
+                        "name": "end",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "end_aa",
+                        "type": "RECORD",
+                        "fields": [
+                          {
+                            "name": "start",
+                            "type": "TIMESTAMP"
+                          },
+                          {
+                            "name": "end",
+                            "type": "TIMESTAMP"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "id",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "start",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "start_aa",
+                        "type": "RECORD",
+                        "fields": [
+                          {
+                            "name": "start",
+                            "type": "TIMESTAMP"
+                          },
+                          {
+                            "name": "end",
+                            "type": "TIMESTAMP"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "system",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "type",
+                    "type": "RECORD",
+                    "fields": [
+                      {
+                        "name": "coding",
+                        "type": "RECORD",
+                        "mode": "REPEATED",
+                        "fields": [
+                          {
+                            "name": "code",
+                            "type": "STRING"
+                          },
+                          {
+                            "name": "display",
+                            "type": "STRING"
+                          },
+                          {
+                            "name": "display_aa",
+                            "type": "STRING"
+                          },
+                          {
+                            "name": "id",
+                            "type": "STRING"
+                          },
+                          {
+                            "name": "system",
+                            "type": "STRING"
+                          },
+                          {
+                            "name": "userSelected",
+                            "type": "BOOLEAN"
+                          },
+                          {
+                            "name": "version",
+                            "type": "STRING"
+                          },
+                          {
+                            "name": "version_aa",
+                            "type": "STRING"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "id",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "text",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "text_aa",
+                        "type": "STRING"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "use",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "value",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "value_aa",
+                    "type": "STRING"
+                  }
+                ]
+              },
+              {
+                "name": "reference",
+                "type": "STRING"
+              },
+              {
+                "name": "reference_id_aa",
+                "type": "STRING"
+              },
+              {
+                "name": "reference_prev_aa",
+                "type": "STRING"
+              },
+              {
+                "name": "type",
+                "type": "STRING"
+              }
+            ]
+          },
+          {
+            "name": "id",
+            "type": "STRING"
+          },
+          {
+            "name": "period",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "end",
+                "type": "STRING"
+              },
+              {
+                "name": "end_aa",
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "start",
+                    "type": "TIMESTAMP"
+                  },
+                  {
+                    "name": "end",
+                    "type": "TIMESTAMP"
+                  }
+                ]
+              },
+              {
+                "name": "id",
+                "type": "STRING"
+              },
+              {
+                "name": "start",
+                "type": "STRING"
+              },
+              {
+                "name": "start_aa",
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "start",
+                    "type": "TIMESTAMP"
+                  },
+                  {
+                    "name": "end",
+                    "type": "TIMESTAMP"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "system",
+            "type": "STRING"
+          },
+          {
+            "name": "type",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "coding",
+                "type": "RECORD",
+                "mode": "REPEATED",
+                "fields": [
+                  {
+                    "name": "code",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "display",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "display_aa",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "id",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "system",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "userSelected",
+                    "type": "BOOLEAN"
+                  },
+                  {
+                    "name": "version",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "version_aa",
+                    "type": "STRING"
+                  }
+                ]
+              },
+              {
+                "name": "id",
+                "type": "STRING"
+              },
+              {
+                "name": "text",
+                "type": "STRING"
+              },
+              {
+                "name": "text_aa",
+                "type": "STRING"
+              }
+            ]
+          },
+          {
+            "name": "use",
+            "type": "STRING"
+          },
+          {
+            "name": "value",
+            "type": "STRING"
+          },
+          {
+            "name": "value_aa",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "reference",
+        "type": "STRING"
+      },
+      {
+        "name": "reference_id_aa",
+        "type": "STRING"
+      },
+      {
+        "name": "reference_prev_aa",
+        "type": "STRING"
+      },
+      {
+        "name": "type",
+        "type": "STRING"
+      }
+    ]
+  },
+  {
+    "name": "resourceType",
+    "type": "STRING"
+  },
+  {
+    "name": "id_prev_aa",
+    "type": "STRING"
+  },
+  {
+    "name": "telecom",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "fields": [
+      {
+        "name": "id",
+        "type": "STRING"
+      },
+      {
+        "name": "period",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "end",
+            "type": "STRING"
+          },
+          {
+            "name": "end_aa",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "start",
+                "type": "TIMESTAMP"
+              },
+              {
+                "name": "end",
+                "type": "TIMESTAMP"
+              }
+            ]
+          },
+          {
+            "name": "id",
+            "type": "STRING"
+          },
+          {
+            "name": "start",
+            "type": "STRING"
+          },
+          {
+            "name": "start_aa",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "start",
+                "type": "TIMESTAMP"
+              },
+              {
+                "name": "end",
+                "type": "TIMESTAMP"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "rank",
+        "type": "INTEGER"
+      },
+      {
+        "name": "system",
+        "type": "STRING"
+      },
+      {
+        "name": "use",
+        "type": "STRING"
+      },
+      {
+        "name": "value",
+        "type": "STRING"
+      },
+      {
+        "name": "value_aa",
+        "type": "STRING"
+      }
+    ]
+  },
+  {
+    "name": "type",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "fields": [
+      {
+        "name": "coding",
+        "type": "RECORD",
+        "mode": "REPEATED",
+        "fields": [
+          {
+            "name": "code",
+            "type": "STRING"
+          },
+          {
+            "name": "display",
+            "type": "STRING"
+          },
+          {
+            "name": "display_aa",
+            "type": "STRING"
+          },
+          {
+            "name": "id",
+            "type": "STRING"
+          },
+          {
+            "name": "system",
+            "type": "STRING"
+          },
+          {
+            "name": "userSelected",
+            "type": "BOOLEAN"
+          },
+          {
+            "name": "version",
+            "type": "STRING"
+          },
+          {
+            "name": "version_aa",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "id",
+        "type": "STRING"
+      },
+      {
+        "name": "text",
+        "type": "STRING"
+      },
+      {
+        "name": "text_aa",
+        "type": "STRING"
+      }
+    ]
+  }
+]
