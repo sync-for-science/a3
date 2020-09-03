@@ -1,17 +1,73 @@
--- Queries 118 patient synthetic dataset at composed-circle-270115.a3
--- generated using https://github.com/synthetichealth/synthea
+-- Queries hard coded sample data below (try changing some of the values!)
+
+CREATE TEMP TABLE Patient AS ( SELECT 'Patient' AS resourceType,
+'p1' AS id,
+STRUCT ( TIMESTAMP('2000-01-01 00:00:00.000Z') AS start,
+TIMESTAMP('2000-01-01 23:59:59.999Z') AS `end`  ) AS birthDate_aa );
+
+CREATE TEMP TABLE Condition AS ( SELECT 'Condition' AS resourceType,
+'c1' AS id,
+STRUCT ( [ STRUCT ( 'http://terminology.hl7.org/CodeSystem/condition-clinical' AS system,
+'active' AS code  ) ] AS coding  ) AS clinicalStatus,
+STRUCT ( [ STRUCT ( 'http://terminology.hl7.org/CodeSystem/condition-ver-status' AS system,
+'confirmed' AS code  ) ] AS coding  ) AS verificationStatus,
+STRUCT ( [ STRUCT ( 'http://snomed.info/sct' AS system,
+'44054006' AS code,
+'Diabetes' AS display  ) ] AS coding  ) AS code,
+STRUCT ( 'p1' AS reference_id_aa,
+'Patient' AS type  ) AS subject UNION ALL  SELECT 'Condition' AS resourceType,
+'c2' AS id,
+STRUCT ( [ STRUCT ( 'http://terminology.hl7.org/CodeSystem/condition-clinical' AS system,
+'active' AS code  ) ] AS coding  ) AS clinicalStatus,
+STRUCT ( [ STRUCT ( 'http://terminology.hl7.org/CodeSystem/condition-ver-status' AS system,
+'confirmed' AS code  ) ] AS coding  ) AS verificationStatus,
+STRUCT ( [ STRUCT ( 'http://snomed.info/sct' AS system,
+'59621000' AS code,
+'Hypertension' AS display  ) ] AS coding  ) AS code,
+STRUCT ( 'p2' AS reference_id_aa,
+'Patient' AS type  ) AS subject );
+
+CREATE TEMP TABLE Observation AS ( SELECT 'Observation' AS resourceType,
+'o1' AS id,
+'final' AS status,
+[ STRUCT ( [ STRUCT ( 'http://terminology.hl7.org/CodeSystem/observation-category' AS system,
+'laboratory' AS code  ) ] AS coding  ) ] AS category,
+STRUCT ( [ STRUCT ( 'http://loinc.org' AS system,
+'4548-4' AS code,
+'Hemoglobin A1c/Hemoglobin.total in Blood' AS display  ) ] AS coding  ) AS code,
+STRUCT ( 'p1' AS reference_id_aa,
+'Patient' AS type  ) AS subject,
+STRUCT ( TIMESTAMP('2019-12-31 11:53:47.000-05:00') AS start,
+TIMESTAMP('2019-12-31 11:53:47.999-05:00') AS `end`  ) AS effectiveDateTime_aa,
+STRUCT ( 8.22 AS value,
+'http://unitsofmeasure.org' AS system,
+'%' AS code  ) AS valueQuantity UNION ALL  SELECT 'Observation' AS resourceType,
+'o2' AS id,
+'final' AS status,
+[ STRUCT ( [ STRUCT ( 'http://terminology.hl7.org/CodeSystem/observation-category' AS system,
+'laboratory' AS code  ) ] AS coding  ) ] AS category,
+STRUCT ( [ STRUCT ( 'http://loinc.org' AS system,
+'4548-4' AS code,
+'Hemoglobin A1c/Hemoglobin.total in Blood' AS display  ) ] AS coding  ) AS code,
+STRUCT ( 'p1' AS reference_id_aa,
+'Patient' AS type  ) AS subject,
+STRUCT ( TIMESTAMP('2019-11-30 11:53:47.000-05:00') AS start,
+TIMESTAMP('2019-11-30 11:53:47.999-05:00') AS `end`  ) AS effectiveDateTime_aa,
+STRUCT ( 8.22 AS value,
+'http://unitsofmeasure.org' AS system,
+'%' AS code  ) AS valueQuantity );
 
 WITH pt AS (
 	SELECT id AS PatientId,
 		birthDate_aa.start AS birthDate
-	FROM `composed-circle-270115`.a3.Patient
+	FROM  Patient
 ),
 
 dm_dx AS (
 	SELECT subject.reference_id_aa AS PatientId,
 		Condition.id AS ResourceId
 
-	FROM `composed-circle-270115`.a3.Condition
+	FROM Condition
 		LEFT JOIN UNNEST(clinicalStatus.coding) clinical_status_coding ON true,
 		UNNEST(Condition.code.coding) condition_coding
 
@@ -25,7 +81,7 @@ htn_dx AS (
 	SELECT subject.reference_id_aa AS PatientId,
 		Condition.id AS ResourceId
 
-	FROM `composed-circle-270115`.a3.Condition
+	FROM Condition
 		LEFT JOIN UNNEST(clinicalStatus.coding) clinical_status_coding ON true,
 		UNNEST(Condition.code.coding) condition_coding
 
@@ -47,7 +103,7 @@ a1c_2 AS (
 		effectiveDateTime_aa.start AS effectiveDateTime_start,
 		effectiveDateTime_aa.end AS effectiveDateTime_end
 
-	FROM `composed-circle-270115`.a3.Observation,
+	FROM Observation,
 		UNNEST(Observation.code.coding) observation_coding
 
 	WHERE subject.type = 'Patient'
@@ -75,8 +131,7 @@ a1c_2_latest AS (
 
 a1c_2_elevated AS (
 	SELECT * FROM a1c_2_latest
-	-- elevated a1c value is lowered to 6 to match patients in sample dataset
-	WHERE a1c_2_latest.valueQuantity.value > 6
+	WHERE a1c_2_latest.valueQuantity.value > 8
 ),
 
 a1c_1 AS (	
@@ -86,12 +141,11 @@ a1c_1 AS (
 		effectiveDateTime_aa.start AS effectiveDateTime_start,
 		effectiveDateTime_aa.end AS effectiveDateTime_end
 
-	FROM `composed-circle-270115`.a3.Observation
+	FROM Observation
 		INNER JOIN a1c_2_elevated 
 			ON a1c_2_elevated.PatientId = subject.reference_id_aa
 			AND DATETIME(effectiveDateTime_aa.end) < DATETIME_ADD(DATETIME(a1c_2_elevated.effectiveDateTime_start), INTERVAL -1 DAY)
-			-- Date constraint adjusted to match patients in sample dataset
-			-- AND DATETIME(effectiveDateTime_aa.end) > DATETIME_ADD(DATETIME(a1c_2_elevated.effectiveDateTime_start), INTERVAL -60 DAY)
+			AND DATETIME(effectiveDateTime_aa.end) > DATETIME_ADD(DATETIME(a1c_2_elevated.effectiveDateTime_start), INTERVAL -60 DAY)
      INNER JOIN pt
      ON pt.PatientId = subject.reference_id_aa
 			AND DATETIME(effectiveDateTime_aa.start) >= DATETIME_ADD(DATETIME(pt.birthDate), INTERVAL 18 YEAR),
@@ -122,8 +176,7 @@ a1c_1_latest AS (
 
 a1c_1_elevated AS (
 	SELECT * FROM a1c_1_latest
-	-- elevated a1c value is lowered to 6 to match patients in sample dataset
-	WHERE a1c_1_latest.valueQuantity.value > 6
+	WHERE a1c_1_latest.valueQuantity.value > 8
 )
 
 SELECT DISTINCT(a1c_1_elevated.PatientId) FROM a1c_1_elevated

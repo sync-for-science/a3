@@ -35,11 +35,12 @@ Existing FHIR Bulk Data API implementations include:
 
 ## Transform
 
-This activity picks up where the current HL7 FHIR Bulk Data API extraction leaves off - with a set of raw FHIR data export files in NDJSON format. While the FHIR data model schemas are robust, extensible and flexible, they are designed for data transport, rather than storage or analytics. FHIR is not unique in this regard, EHR and billing data exports generally require transformation to support analytic queries.
+This activity picks up where the current HL7 FHIR Bulk Data API extraction leaves off - with a set of raw FHIR data export files in NDJSON format. While the FHIR data model schemas are well structured, extensible and flexible, they are designed for data transport, rather than storage or analytics. FHIR is not unique in this regard, EHR and billing data exports generally require transformation to support analytic queries.
 
-However, as a highly compressible, streamable format with broad tooling support, NDJSON provides a robust base for data transformation. The A3 architecture envisions a configurable pipeline of transformations that organizations can choose to apply to the raw, extracted FHIR data, creating new, annotated NDJSON files. Transformations may include NLP to convert clinical notes to structured FHIR data, terminology expansion to insert additional identifiers, de-identification (Microsoft has recently released an open source bulk data tool for this at https://github.com/microsoft/FHIR-Tools-for-Anonymization), validation (for example, the NLM LOINC to unit validator at https://github.com/lhncbc/loinc-mapping-validator) and even ML based risk scoring.
+However, as a highly compressible, streamable format with broad tooling support, NDJSON provides a robust base for data transformation. These transformations can be performed in a pipeline that varies by data source and use case, creating new, modified  NDJSON files to be loaded into an analytics platform.
 
-As part of this transformation pipeline, A3 defines a standard set of annotations to the FHIR data models to better support the types of queries used in defining cohorts, calculating quality measures, and performing public health data surveillance. There are a number of advantages to a model where FHIR data is annotated rather than converted into a new format:
+A3 represents a component in such a transformation pipeline that adds a standard set of annotations to the FHIR data models to better support the types of queries used in defining cohorts, calculating quality measures, and performing public health data surveillance. There are a number of advantages to a model where FHIR data is annotated rather than converted into a new format:
+
 - The raw data are always available to users if questions arise around the derived data models
 - There is extensive documentation of FHIR in the form of thousands of pages of creative commons licensed text, publicly available videos, and training courses
 - As more developers and researchers use FHIR in building clinical applications, they will be able to re-use these skills in analytics work (and vice versa)
@@ -47,21 +48,22 @@ As part of this transformation pipeline, A3 defines a standard set of annotation
 - Large community efforts exist to map formats such as OMOP and i2b2 to FHIR making it a lingua franca for healthcare data
 - Even when data is ultimately converted to another format, there are advantages to running some analytics in parallel in the source format to ensure that data integrity is maintained in the transformation
 
-The initial set of annotations defined in A3 cover the areas below (described in more detail in [algorithm.md](algorithm.md)), as unit tests in [augmentor.test.js](./etl/test/augmentor.test.js), and implemented in [augmentor.js](./etl/src/augmentor.js)). Of course, there is always a trade off between storing additional annotation data and building more complex queries at run time. Many modern big data systems are CPU bound rather than disk bound, and every system is limited  by developer/analyst availability, so A3 leans toward reducing complexity and computation by storing additional data. Also, while not addressed in the prototype, some implementations may wish to match patients and providers to master patient and provider indexes and annotate the FHIR resources with these identifiers as well.
+The initial set of annotations defined in A3 cover the areas below (described in more detail in [algorithm.md](algorithm.md)), as unit tests in [augmentor.test.js](./etl/test/augmentor.test.js), and implemented in [augmentor.js](./etl/src/augmentor.js)). Of course, there is always a trade off between storing additional annotation data and building more complex queries at run time. Many modern big data systems are CPU bound rather than disk bound, and every system is limited  by developer/data analyst availability, so A3 leans toward reducing complexity and computation by storing additional data. However, A3 does not alter the structure of the FHIR resources, instead annotating them with additional properties (in the case of contained resources generating supplementary resources). All of the A3 annotations are all suffixed by `_aa` (eg. `display_aa`) so the resources can easily be returned to a validatable FHIR format by stripping out these elements.
 
 A3 Annotations:
-- Dates and time values (eg. a FHIR date of "2019" should be queryable as a date range of 1-1-2019 to 12-31-2019)
-- Text values (eg. text with differing unicode codepoints that appears the same to end users should be queryable using a single text string)
-- Resource identifiers (eg. there may be namespace collisions when data is integrated from multiple systems)
-- Contained Resources (eg. users should not have to know the embedding business rules used by the source FHIR server)
-- Resource references (eg. as with identifiers, there may be namespace collisions when data is integrated from multiple systems)
-- Extensions (eg. may be nested with relative urls making querying difficult)
-- Recursive Structures (eg. some structures can be infinitely recursive and need to be truncated to be stored in a queryable format)
-- Address (eg. postal standardization and geocoding) - not currently implemented in prototype
-- Aggregations (eg. drug and device exposure eras) - not currently implemented in prototype
-- Identifiers (eg. mappings to master patient index and master provider index) - not currently implemented in prototype
+- Date and time values (eg. a FHIR date of "2019" should be queryable as a date range of 1-1-2019 to 12-31-2019). [Details](algorithm.md#date-datetime-instant)
+- Text values (eg. text with differing unicode codepoints that appears the same to end users should be queryable using a single text string). [Details](algorithm.md#string)
+- Resource identifiers (eg. there may be namespace collisions when data is integrated from multiple systems). [Details](algorithm.md#resource-id)
+- Contained Resources (eg. users should not have to know the embedding business rules used by the source FHIR server). [Details](algorithm.md#contained-resources)
+- Resource references (eg. as with identifiers, there may be namespace collisions when data is integrated from multiple systems). [Details](algorithm.md#reference)
+- Extensions (eg. may be nested with relative urls making querying difficult). [Details](algorithm.md#extensions-and-modifier-extensions)
+- Recursive Structures (eg. some structures can be infinitely recursive and need to be truncated to be stored in a queryable format). [Details](algorithm.md#recursive-structures)
+- Address (eg. postal standardization and geocoding) - not currently implemented in prototype. [Details](algorithm.md#address---not-currently-implemented-in-prototype)
+- Aggregations (eg. drug and device exposure eras) - not currently implemented in prototype.
 
-An earlier project tackling some of these issues described at https://github.com/FHIR/sql-on-fhir/blob/master/sql-on-fhir.md though it does not appear to be actively developed.
+Other transformations that may be applied as stages in the pipeline in conjunction with A3 include NLP to convert clinical notes to structured FHIR data, terminology expansion to insert additional identifiers, de-identification (Microsoft has recently released an open source bulk data tool for this at https://github.com/microsoft/FHIR-Tools-for-Anonymization), validation (for example, the NLM LOINC to unit validator at https://github.com/lhncbc/loinc-mapping-validator), matching patients and providers to master patient and provider indexes and adding these identifiers to the FHIR resources, and even ML based risk scoring.
+
+An earlier project tackling FHIR data transformation for analytics is described at https://github.com/FHIR/sql-on-fhir/blob/master/sql-on-fhir.md though it does not appear to be actively developed.
 
 ## Load
 
@@ -83,7 +85,8 @@ The example visual definition and SQL query below builds a cohort of patients wh
 Links:
 - [A3 Query UI Demo (A1C Example)](http://syncfor.science/a3/index.html?example=true)
 - [A3 Query UI Demo](http://syncfor.science/a3/)
-- [BigQuery SQL](./sql/dm-example-bq.sql) - hand coded example, but goal is to auto-generate from the UI
+- [BigQuery SQL - Dynamic Data](./sql/dm-example-bq.sql) - hand coded example, but goal is to auto-generate from the Cohort Query UI down the road. Queries a public A3 dataset of 118 synthetic patients generated using https://github.com/synthetichealth/synthea.
+- [BigQuery SQL - Static Data](./sql/dm-example-bq-static-data.sql) - queries hard coded temp tables loaded at the start of the SQL script to simplify experimentation.
 
 ### Cohort Definition UI Prior Art
 
