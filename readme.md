@@ -1,3 +1,5 @@
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/sync-for-science/a3)
+
 # A3 - Prototype of FHIR-native ETL+Q Platform
 
 ## Use Cases
