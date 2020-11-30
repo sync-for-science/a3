@@ -32,7 +32,7 @@ function CodingRule(props) {
 
 		return <div>
 			<div className="my-2">
-				<span className="mr-1 font-weight-bold">{props.fieldDefinition.name}</span>
+				<span className="mr-1 font-weight-bold">{props.fieldDefinition.name || props.fieldDefinition.id}</span>
 				<span>is</span>
 				{!props.hideControls && <FontAwesomeIcon icon={faTrashAlt} opacity="0.5"
 					onClick={e => props.onDelete(props.id)} 
@@ -54,7 +54,31 @@ function CodingRule(props) {
 		</div>
 	}
 
+	const renderCustomEditCode = () => {
+		return <div>
+			<div className="my-2">
+				<span className="mr-1 font-weight-bold">{props.fieldDefinition.name || props.fieldDefinition.id}</span>
+				<span>matches the code</span>
+				{!props.hideControls && <FontAwesomeIcon icon={faTrashAlt} opacity="0.5"
+					onClick={e => props.onDelete(props.id)} 
+					style={{cursor: "pointer"}} 
+					pull="right" 
+				/>}
+			</div>	
+			<div className="form-group">
+				<input className="form-control" value={props.data.code || ""}
+					onChange={e => handleChange("code", e.target.value)}
+					className={props.data.invalid && props.data.validate ? "is-invalid form-control" : "form-control"}
+				/>
+			</div>
+		</div>
+	}
+
 	const renderCustomEdit = () => {
+
+		if (props.fieldDefinition.type === "code")
+			return renderCustomEditCode();
+
 		return <div>
 			{ renderHeader() }
 			<div className="form-group">
@@ -79,7 +103,7 @@ function CodingRule(props) {
 	}
 
 	const renderHeader = () => <div className="my-2">
-		<span className="mr-1 font-weight-bold">{props.fieldDefinition.name}</span>
+		<span className="mr-1 font-weight-bold">{props.fieldDefinition.name || props.fieldDefinition.id}</span>
 		<span>matches at least one code in</span>
 		{!props.hideControls && <FontAwesomeIcon icon={faTrashAlt} opacity="0.5"
 			onClick={e => props.onDelete(props.id)} 
@@ -107,7 +131,7 @@ function CodingRule(props) {
 				/>
 			}
 			<div style={{lineHeight: 2}}>
-				<span className="mt-1 mr-1 font-weight-bold">{props.fieldDefinition.name}</span>
+				<span className="mt-1 mr-1 font-weight-bold">{props.fieldDefinition.name || props.fieldDefinition.id}</span>
 				{codeCount > 1 ? " matches at least one code in valueset " : " matches code "}
 				<span className="mark mt-1">{name}</span>
 				{codeCount > 1 && <span className="mt-1">({codeCount} codes)</span>}

@@ -1,3 +1,5 @@
+import { connectStoreon } from "storeon/react";
+
 function sanitizeValue(value) { return value }
 
 function buildSqlBlocks(blocks) {
@@ -7,13 +9,13 @@ function buildSqlBlocks(blocks) {
 
 		sqlBlocks[block.id] = sqlBlocks[block.id] || { 
 			fields: {}, joinTargets: {}, 
-			id: block.id, parentId: block.parentId,
+			id: block.id, parentId: block.parentId, name: block.name,
 			tableName: block.definition && block.definition.tableName,
 			patientIdField: block.definition && block.definition.patientIdField,
 			resourceIdField: block.definition && (block.definition.resourceIdField || "id")
 		};
 
-		if (block.parentId && !sqlBlocks[block.id].joinTargets[block.id] && block.parentId !== "root")
+		if (block.parentId !== null && !sqlBlocks[block.id].joinTargets[block.id] && block.parentId !== "root")
 			sqlBlocks[block.id].joinTargets[block.parentId] = "patient_id";
 
 		(block.rules || []).forEach( rule => {
@@ -30,12 +32,14 @@ function buildSqlBlocks(blocks) {
 			sqlBlocks[block.id].exclude = block.exclude; 
 			
 			rule.restrictions.forEach( r => {
-				if (r.compareTo && r.compareTo !== "fixed" && r.comparator.indexOf("populated") === -1) {
+				if (r.compareTo && r.compareTo !== "fixed" && r.compareTo !== "run" && r.comparator.indexOf("populated") === -1) {
 					const [blockId, fieldId] = r.compareTo.split(".");
 					sqlBlocks[blockId] = sqlBlocks[blockId] || { fields: {}, joinTargets: {} };
 					sqlBlocks[blockId].fields[fieldId] = sqlBlocks[blockId].fields[fieldId]  || {};
 					sqlBlocks[blockId].fields[fieldId].export = true;
-					sqlBlocks[blockId].fields[fieldId].definition = fieldDefinition;
+					const sourceDefinition = 
+						blocks.find( b => b.id === parseInt(blockId)).definition.fields.find( f => f.id === fieldId );
+					sqlBlocks[blockId].fields[fieldId].definition = sourceDefinition;
 					if (!sqlBlocks[block.id].joinTargets[blockId]) 
 						sqlBlocks[block.id].joinTargets[blockId] = "patient_id";
 				} else if (r.target && fieldDefinition.type === "fhirId") {
@@ -46,7 +50,8 @@ function buildSqlBlocks(blocks) {
 			})
 		});
 
-		if (block.retention && block.retention.retentionType !== "none") {
+		// console.log(sqlBlocks)
+		if (block.retention && block.retention.retentionType !== "none" && block.retention.retentionType !== "all") {
 			const fieldId = block.retention.retentionSortField;
 			sqlBlocks[block.id].retentionSortField = fieldId;
 			sqlBlocks[block.id].retentionSortDir = block.retention.retentionType === "latest" ? "DESC" : "ASC";
@@ -62,12 +67,13 @@ function buildSqlBlocks(blocks) {
 
 	let orderedBlocks = [];
 	const walkChildren = blockId => {
-		if (blockId && sqlBlocks[blockId])
+		if (blockId !== undefined && sqlBlocks[blockId])
 			orderedBlocks.push( sqlBlocks[blockId] );
 		blocks.filter( b => b.parentId === blockId )
 			.forEach( b => walkChildren(b.id) )
 	}
 	walkChildren("root");
+
 	return orderedBlocks;
 }
 
@@ -130,16 +136,25 @@ function buildRestrictions(field, blockId) {
 		quantity: buildQuantity, date: buildDate
 	}[field.definition.type];
 
+	if (!buildFn) return;
+
 	const fieldName = "f_" + blockId + "_"  + field.definition.id;
 	let where = {type: "AND", criteria: []};
-	field.restrictions.forEach( ruleSet => {
-		let ruleSetWhere = {type: "OR", criteria: []}
-		buildFn && ruleSet.forEach( r => {
-			const group = buildFn(r, fieldName)
-			ruleSetWhere.criteria.push(group);
+	
+	field.restrictions.forEach( restriction => {
+		let restrictionWhere = {type: "OR", criteria: []}
+		restriction.forEach( r => {
+			if (r.option) {
+				const values = field.definition.options.find( o => o.name === r.option).values;
+				const group = values.map( v => buildFn(v, fieldName) );
+				restrictionWhere.criteria = restrictionWhere.criteria.concat(group);
+			} else {
+				const group = buildFn(r, fieldName);
+				restrictionWhere.criteria.push(group);
+			}
 		});
-		if (ruleSetWhere.criteria.length)
-			where.criteria.push(ruleSetWhere);
+		if (restrictionWhere.criteria.length)
+			where.criteria.push(restrictionWhere);
 	});
 	return where.criteria.length ? where : null;
 }
@@ -209,12 +224,19 @@ function buildDate(r, fieldName) {
 	if (isAbsolute)
 		return `DATETIME(${fieldName}) ${comparator + (hasPredicate ? "DATETIME('" + r.fixedValue +"')" : "")}`;
 
-	const [blockId, fieldId] = r.compareTo.split(".");
-	if (r.offsetValue) {
-		const offset = `'${r.offsetDir === "minus" ? + "-" : "+"}${r.offsetValue} ${r.offsetUnit}')`;
-		return `DATETIME(${fieldName}) ${comparator} DATETIME(block_${blockId}.f_${blockId}_${fieldId}, ${offset})`;
+	let target;
+	if (r.compareTo === "run") {
+		target = "'NOW'"
 	} else {
-		return `DATETIME(${fieldName}) ${comparator} DATETIME(block_${blockId}.f_${blockId}_${fieldId})`;
+		const [blockId, fieldId] = r.compareTo.split(".");
+		target = `block_${blockId}.f_${blockId}_${fieldId}`;
+	}
+
+	if (r.offsetValue) {
+		const offset = `'${r.offsetDir === "minus" ? "-" : "+"}${r.offsetValue} ${r.offsetUnit}'`;
+		return `DATETIME(${fieldName}) ${comparator} DATETIME(${target}, ${offset})`;
+	} else {
+		return `DATETIME(${fieldName}) ${comparator} DATETIME(${target})`;
 	}
 }
 
@@ -231,12 +253,14 @@ function wrapInTemporalFilter(sqlBlock, sql) {
 ) AS outer WHERE outer.rank = 1`
 }
 
-function wrapInTempTable(id, sql) {
-	return [
+function wrapInTempTable(id, sql, commentText) {
+	let expressions = commentText ? ["-- " + commentText] : [];
+	expressions.push(
 		`DROP TABLE IF EXISTS block_${id};`,
 		`CREATE TEMPORARY TABLE block_${id} AS`,
 		`${sql};`
-	].join("\n");
+	)
+	return expressions.join("\n");
 }
 
 function buildTerminalQuery(sqlBlocks) {
@@ -261,6 +285,7 @@ function buildTerminalQuery(sqlBlocks) {
 	}) );
 
 	return [
+		`-- Patient List`,
 		`DROP TABLE IF EXISTS patient_list;`, 
 		`CREATE TEMPORARY TABLE patient_list AS`
 	].concat(select).join("\n")+";";
@@ -278,7 +303,8 @@ function buildCountQuery(sqlBlocks) {
 		if (block.id === "root") return;
 		selects.push(`SELECT ${block.id} block, COUNT(DISTINCT f_${block.id}_patient_id) patients FROM block_${block.id}`)
 	});
-	return selects.join("\nUNION ALL\n") + ";";
+	const comment = "-- Block Counts\n";
+	return comment + selects.join("\nUNION ALL\n") + ";";
 }
 
 function buildPatientListQuery(sqlBlocks) {
@@ -290,13 +316,14 @@ function buildPatientListQuery(sqlBlocks) {
 		ON patient_list.list_patient_id = json_extract(${rootBlock.tableName}.json, '$.${rootBlock.patientIdField || "id"}');`
 }
 
-function buildSql(blocks, outputCounts) {
+function buildSql(blocks, outputCounts, hideComments) {
 	let sql = [];
 
 	const sqlBlocks = buildSqlBlocks(blocks);
 
 	sqlBlocks.forEach( block => {
-		if (!block.tableName || !block.parentId) return;
+
+		if (!block.tableName || block.parentId === undefined) return;
 
 		let blockElements = {join: [], select: [], where: []};
 
@@ -308,13 +335,12 @@ function buildSql(blocks, outputCounts) {
 		});
 
 		blockElements.select.push(
-			buildField({field: block.patientIdField, id: "patient_id"}, block.id).select,
-			buildField({field: block.resourceIdField, id: "resource_id"}, block.id).select,
+			buildField({field: block.patientIdField || "subject.reference", id: "patient_id"}, block.id).select,
+			buildField({field: block.resourceIdField || "id", id: "resource_id"}, block.id).select,
 		);
 
 		Object.keys(block.fields).forEach( fieldId => {
 			const field = block.fields[fieldId];
-			
 			//fhirIds are handled as a joinTarget above
 			if (field.type === "fhirId") return;
 
@@ -343,8 +369,8 @@ function buildSql(blocks, outputCounts) {
 		if (block.retentionSortField) innerSql = 
 			wrapInTemporalFilter(block, innerSql);
 
-
-		sql.push(wrapInTempTable(block.id, innerSql));
+		const commentText = !hideComments ? sanitizeValue(block.name) : null;
+		sql.push(wrapInTempTable(block.id, innerSql, commentText));
 
 	})
 	

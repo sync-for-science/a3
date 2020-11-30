@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import RuleSet, {getRuleDefaults} from "./RuleSet";
+import Restrictions, {getRuleDefaults} from "./Restrictions";
 import Retention from "./Retention";
 import _ from "lodash";
 import { Modal, Button, DropdownButton, Dropdown, ListGroup, ListGroupItem, Form }  from "react-bootstrap";
@@ -13,21 +13,22 @@ function BlockEditor(props) {
 
 	const [isDirty, setIsDirty] = useState();
 	const [dirtyWarning, setDirtyWarning] = useState();
+	const [referenceWarning, setReferenceWarning] = useState();
 
 	const [definition, setDefinition] = useState(props.data.definition);
 	const [validate, setValidate] = useState();
 	
 	const updateRule = (ruleId, newRule) => {
 		setRules(
-			rules.map(rule => rule.id !== ruleId ? rule : {...rule, ruleSet: newRule})
+			rules.map(rule => rule.id !== ruleId ? rule : {...rule, restrictions: newRule})
 		);
 		setIsDirty(true);
 	}
 
-	const addRule = fieldName => {	
-		const fieldDefinition = definition.fields.find( d => d.name === fieldName);
+	const addRule = fieldId => {	
+		const fieldDefinition = definition.fields.find( d => d.id === fieldId);
 		setRules(
-			rules.concat([{id: nextRuleId, fieldName, edit: true, ruleSet: [getRuleDefaults(fieldDefinition)] }])
+			rules.concat([{id: nextRuleId, fieldId, edit: true, restrictions: [getRuleDefaults(fieldDefinition)] }])
 		);
 		setNextRuleId(nextRuleId+1);
 		setIsDirty(true);
@@ -40,13 +41,13 @@ function BlockEditor(props) {
 
 	const handleSaveBlock = () => {
 		const invalidRules = rules.filter(r => {
-			return r.ruleSet.filter(rs => rs.invalid ? true : false).length
+			return r.restrictions.filter(rs => rs.invalid ? true : false).length
 		});
 		if (invalidRules.length > 0) setRules(
 			rules.map( r => ({
 				...r,
-				edit: r.ruleSet.filter(rs => rs.invalid ? true : false).length > 0,
-				ruleSet: r.ruleSet.map(rs => ({...rs, validate: true}) )
+				edit: r.restrictions.filter(rs => rs.invalid ? true : false).length > 0,
+				restrictions: r.restrictions.map(rs => ({...rs, validate: true}) )
 			}) )
 		);
 		if (retention.invalid || !name) setValidate(true);
@@ -57,11 +58,14 @@ function BlockEditor(props) {
 			name, retention, definition, 
 			parentId: props.parentId, id: props.id,
 			nextRuleId,
-			rules: rules.map( r => ({
-				...r,
-				edit: false,
-				ruleSet: r.ruleSet.map(rs => ({...rs, validate: false}) )
-			}) )
+			rules: rules.map( r => {
+				const restrictions = r.restrictions.map( restriction => {
+					const {validate, invalid, ...detail} = restriction;
+					return detail;
+				})
+				const {edit, ...rule} = r;
+				return {...rule, restrictions}
+			})
 		})
 	
 	}
@@ -72,6 +76,14 @@ function BlockEditor(props) {
 			setDirtyWarning(true);
 		} else {
 			props.onClose();
+		}
+	}
+
+	const handleDeleteBlock = (e, force) => {
+		if (!force && props.isReferenced) {
+			setReferenceWarning(true);
+		} else {
+			props.onDelete();
 		}
 	}
 
@@ -102,12 +114,12 @@ function BlockEditor(props) {
 		return <div className="d-flex">
 			<DropdownButton title="Add Rule" variant="success" className="mr-auto">
 				{ddFields.map( field => {
-					return <Dropdown.Item onClick={e => addRule(field.name)} key={field.name}>
-						{field.name}
+					return <Dropdown.Item onClick={e => addRule(field.id)} key={field.id}>
+						{field.name || field.id}
 					</Dropdown.Item>
 				})}
 			</DropdownButton>
-			<Button variant="outline-danger" className="mr-2" onClick={props.onDelete}>Delete Block</Button>
+			<Button variant="outline-danger" className="mr-2" onClick={handleDeleteBlock}>Delete Block</Button>
 			{ isDirty && <Button variant="primary" className="mr-1" onClick={handleSaveBlock}>Save Block</Button> }
 		</div>
 	}
@@ -116,11 +128,11 @@ function BlockEditor(props) {
 	const renderRules = () => {
 		return rules.map( rule => {
 			const id = rule.id;
-			const fieldDefinition = definition.fields.find( d => d.name === rule.fieldName)
-			return <div key={rule.id}><RuleSet
+			const fieldDefinition = definition.fields.find( d => d.id === rule.fieldId)
+			return <div key={rule.id}><Restrictions
 				fieldDefinition={fieldDefinition}
 				relativeOptions={props.relativeOptions}
-				data={rule.ruleSet}
+				data={rule.restrictions}
 				edit={rule.edit}
 				onUpdate={r => updateRule(id, r)}
 				onDelete={r => deleteRule(id, r)}
@@ -129,7 +141,7 @@ function BlockEditor(props) {
 	}
 
 	const hasErrors = rules.filter(r => {
-		return r.ruleSet.filter(rs => rs.invalid && rs.validate ? true : false).length > 0
+		return r.restrictions.filter(rs => rs.invalid && rs.validate ? true : false).length > 0
 	}).length > 0 || (validate && !name) || (validate && retention.invalid);
 
 	const renderRuleList = () => <>
@@ -148,10 +160,14 @@ function BlockEditor(props) {
 				</Modal.Title>
 		</Modal.Header>
 		<Modal.Body>
-			<p>Block Type: {definition.name}</p>
+			<p>Block Type: {definition.name} <small>({definition.version})</small></p>
 			{ dirtyWarning && <div className="alert alert-danger text-center mb-4">
 				You have unsaved changes -&nbsp;
 				<a href="#" className="alert-link" onClick={e => handleClose(e, true)}>discard?</a>
+			</div>}
+			{ referenceWarning && <div className="alert alert-danger text-center mb-4">
+				Other blocks reference this block -&nbsp;
+				<a href="#" className="alert-link" onClick={e => handleDeleteBlock(e, true)}>delete anyway?</a>
 			</div>}
 			{ hasErrors && <div className="alert alert-danger text-center mb-4">
 				Please fix the highlighted errors

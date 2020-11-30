@@ -4,6 +4,7 @@ import sqliteGen from "../sqlite-gen";
 
 function getPatientCount(blocks, data, blockId="result") {
 	const sql = sqliteGen.buildSql(blocks, true);
+	// console.log(sql)
 	const result = runQuery(sql, data);
 	return result.find( b => b.block.toString() === blockId.toString()).patients;
 }
@@ -100,6 +101,51 @@ describe("simple query", () => {
 		expect(getPatientCount(blocks, data)).toEqual(1);
 	});
 
+	test("coding with option", () => {
+		const data = [
+			{resourceType: "Condition", id:"2", patientId: "1", code: {
+				coding: [{code: "1234", system: "http://test"}]
+			}},
+			{resourceType: "Patient", id:"1"}
+		];
+		let blocks = [{
+			parentId: "root",
+			id: 1,
+			definition: {
+				tableName: "Condition",
+				patientIdField: "patientId",
+				fields: [{id: "code", field: "code.coding[]", type: "coding",
+					options: [{
+						name: "vs1", values: [
+							{code: "1234", system: "http://test"},
+							{code: "1235", system: "http://test"}
+						]
+					}]
+				}]
+			},
+			rules: [{
+				fieldId: "code",
+				restrictions: [{option: "vs1"}]
+			}]
+		}]
+
+		expect(getPatientCount(blocks, data)).toEqual(1);
+
+		//should support "OR" for multiple values
+		data[0].code.coding[0].code = "1235";
+		expect(getPatientCount(blocks, data)).toEqual(1);
+
+		//don't find bad value
+		data[0].code.coding[0].code = "1236";
+		expect(getPatientCount(blocks, data)).toEqual(0);
+
+		//combine with other "OR" restrictions
+		blocks[0].rules[0].restrictions.push(
+			{system: "http://test", code: "1236"}
+		)
+		expect(getPatientCount(blocks, data)).toEqual(1);
+	});
+
 	test("code", () => {
 		const data = [
 			{resourceType: "Condition", id:"2", patientId: "1", verificationStatus: "confirmed"},
@@ -129,6 +175,33 @@ describe("simple query", () => {
 		blocks[0].rules[0].restrictions = [
 			{code: "confirmed"}, {code: "provisional"}
 		]
+		expect(getPatientCount(blocks, data)).toEqual(1);
+	});
+
+	test("code with option", () => {
+		const data = [
+			{resourceType: "Condition", id:"2", patientId: "1", verificationStatus: "confirmed"},
+			{resourceType: "Patient", id:"1"}
+		];
+		let blocks = [{
+			parentId: "root",
+			id: 1,
+			definition: {
+				tableName: "Condition",
+				patientIdField: "patientId",
+				fields: [{id: "verificationStatus", field: "verificationStatus", type: "code",
+					"options": [
+						{"values": [{"code": "unconfirmed"}], "name": "Unconfirmed"},
+						{"values": [{"code": "confirmed"}], "name": "Confirmed"}
+					]
+				}]
+			},
+			rules: [{
+				fieldId: "verificationStatus",
+				restrictions: [{option: "Confirmed"}]
+			}]
+		}]
+
 		expect(getPatientCount(blocks, data)).toEqual(1);
 	});
 
@@ -246,6 +319,40 @@ describe("simple query", () => {
 		//broader expression
 		blocks[0].rules[0].restrictions[0].fixedValue = "2019-01-01"
 		expect(getPatientCount(blocks, data)).toEqual(2);
+	});
+
+	test("query runtime date", () => {
+		const now = (new Date()).toISOString().split("T")[0];
+		const data = [
+			{resourceType: "Observation", id:"3", patientId: "1", effectiveDateTime: now},
+			{resourceType: "Observation", id:"4", patientId: "2", effectiveDateTime: "2020-06-01"},
+			{resourceType: "Patient", id:"1"},
+			{resourceType: "Patient", id:"2"}
+		];
+		let blocks = [{
+			parentId: "root",
+			id: 1,
+			definition: {
+				tableName: "Observation",
+				patientIdField: "patientId",
+				fields: [{id: "effectiveDateTime", field: "effectiveDateTime", type: "date"}]
+			},
+			rules: [{
+				fieldId: "effectiveDateTime",
+				restrictions: [{
+					comparator: "gt",
+					compareTo: "run",
+					offsetValue: 1,
+					offsetUnit: "day",
+					offsetDir: "minus"
+				}]
+			}]
+		}]
+		expect(getPatientCount(blocks, data)).toEqual(1);
+		
+		blocks[0].rules[0].restrictions[0].offsetDir = "plus"
+		expect(getPatientCount(blocks, data)).toEqual(0);
+
 	});
 
 	test("populated date", () => {

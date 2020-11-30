@@ -1,0 +1,11 @@
+Todo:
+- Warn before deleting blocks with references
+- Shortcut key for testing query
+- Query resources components (componentQuantity) and extensions
+- Drug era block (interval packing)
+- Highlight blocks with references (on hover?)
+- On the fly annotation for browser loaded data / FHIR bundle loading
+- New, open, save cohort definition
+- Download dataset (choose FHIR resources)
+- FHIR data editor
+- Incorporate data profiling?
