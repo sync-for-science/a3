@@ -168,6 +168,7 @@ export default {
 		"parentId": "root",
 		"id": 7,
 		"nextRuleId": 2,
+		"exclude": true,
 		"rules":[{
 			"id":0,
 			"fieldId":"clinicalStatus",

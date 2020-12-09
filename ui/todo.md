@@ -1,11 +1,22 @@
-Todo:
+Short / Medium Term (roughly ordered):
 - Warn before deleting blocks with references
-- Shortcut key for testing query
-- Query resources components (componentQuantity) and extensions
-- Drug era block (interval packing)
+- Shortcut key for running sql to test query
 - Highlight blocks with references (on hover?)
+- Query resources components (componentQuantity) and extensions
+- Era blocks (interval packing)
+- BigQuery SQL generation
+- New, open, save cohort definitions
 - On the fly annotation for browser loaded data / FHIR bundle loading
-- New, open, save cohort definition
 - Download dataset (choose FHIR resources)
-- FHIR data editor
+
+Long Term (unordered):
+- Field selector to enable output of flat dataset
+- Connection to VSAC for integrated valueset loading
+- FHIR data browser?
 - Incorporate data profiling?
+- Medication ingredient mappings
+- Expanded set of blocks
+- Direct connection to DB to run queries
+- Privacy restrictions to limit data returned to counts, LDS, or full based on user 
+- Generate SQL on server from known block repository and use prepared statements to prevent SQL injection in shared queries
+- Sharing of cohort definitions and valuesets

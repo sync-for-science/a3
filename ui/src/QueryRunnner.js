@@ -6,32 +6,40 @@ import _ from 'lodash';
 import sqliteGen from "./sqlite-gen";
 import FileDropZone from "./FileDropZone";
 
-let sqlite;
-
 function QueryTester(props) {
 	
 	const {blocks, dispatch} = useStoreon("blocks");
 
 	const [sqlState, setSqlState] = useState("loading_sqlite");
-	const [dataSource, setDataSource] = useState("built-in");
+	const [dataSource, setDataSource] = useState("local"); //built-in
 	const [fileName, setFileName] = useState();
 	const [db, setDb] = useState();
+	const [dataSummary, setDataSummary] = useState();
+	const [showDataDetail, setShowDataDetail] = useState();
 	const [error, setError] = useState();
 	const fileInputRef = useRef(null);
 	
+	const sqlite = useRef();
+	const hasLocalDb = useRef();
 
 	useEffect( () => {
 		if (props.mode === "test-run")
 			return setSqlState("running_query");
 
-		if (!props.show || sqlite) return;
+		if (!props.show || sqlite.current) return;
 
 		import("./sql-wasm-json1").then( initSqlJs => {
-			sqlite = initSqlJs.default();
-			sqlite.then( () => {
-				setSqlState("no_data");
-				if (dataSource === "built-in")
+			sqlite.current = initSqlJs.default();
+			sqlite.current.then( () => {
+				return fetch("bulk.db", {method: "HEAD"})
+			}).then( response => {
+				hasLocalDb.current = !!response.ok;
+				if (hasLocalDb.current && dataSource === "built-in") {
 					loadBuiltInData();
+				} else {
+					setDataSource("local");
+					setSqlState("no_data");
+				}
 			}).catch( e => {
 				console.log(e);
 				setError("Error loading SQL engine");
@@ -75,17 +83,32 @@ function QueryTester(props) {
 			.mapValues( (resources, rType) => {
 				const resourceStrings = resources.map( r => "('" +JSON.stringify(r) + "')")
 				return [
-					`CREATE TEMPORARY TABLE ${rType}(json)`,
+					`CREATE TABLE ${rType}(json)`,
 					`INSERT INTO ${rType} VALUES ${resourceStrings.join(",")}`
 				]
 			}).values().flatten().join("; ").value();
 	} 
 
+	const summarizeDb = (db) => {
+		const tables = db.exec(
+			`SELECT name FROM sqlite_master
+			WHERE type = 'table' AND name NOT LIKE 'sqlite_%'
+			ORDER BY name asc
+		`);
+		if (!tables[0]) throw {message: "No tables found"}
+		const countSql = tables[0].values.map( value => {
+			return `SELECT '${value[0]}' name, COUNT() records FROM ${value[0]}`
+		});
+		const counts = db.exec(countSql.join(" UNION ALL "))
+		return counts[0].values;
+	}
+
 	const fhirToDb = fhir => {
-		sqlite.then( sqlite => {
+		sqlite.current.then( sqlite => {
 			const newDb = new sqlite.Database();
 			const sql = fhirToSql(fhir);
 			newDb.run(sql);
+			setDataSummary(summarizeDb(newDb));
 			setSqlState("data_loaded");
 			dispatch("hasTestConfig/set", true);
 			setDb(newDb)
@@ -98,8 +121,9 @@ function QueryTester(props) {
 	}
 
 	const openDb = data => {
-		sqlite.then( sqlite => {
+		sqlite.current.then( sqlite => {
 			const newDb = new sqlite.Database(data);
+			setDataSummary(summarizeDb(newDb));
 			setDb(newDb)
 			setSqlState("data_loaded");
 			dispatch("hasTestConfig/set", true);
@@ -133,7 +157,6 @@ function QueryTester(props) {
 					.replace(/\'/g, "''")
 					.trim().split("\n")
 					.map( r => JSON.parse(r));
-				setFileName(`${file.name} (${records.length} resources)`)
 				fhirToDb(records);
 			} else {
 				const data = new Uint8Array(reader.result);
@@ -149,7 +172,7 @@ function QueryTester(props) {
 
 	const loadBuiltInData = () => {
 		setSqlState("loading_data");
-		fetch(`bulk.db`).then( response => {
+		fetch("bulk.db").then( response => {
 			return response.arrayBuffer();
 		})
 		.then( arrayBuffer => {
@@ -193,6 +216,11 @@ function QueryTester(props) {
 		}
 	}
 
+	const handleToggleDetail = (e, show) => {
+		e.preventDefault();
+		setShowDataDetail(show);
+	}
+
 	// console.log(sqlState)
 
 	return <div>
@@ -212,7 +240,7 @@ function QueryTester(props) {
 					<Form.Group>
 						<Form.Control as="select" value={dataSource} onChange={handleDataSourceChange}>
 							<option value="local">Local Dataset</option>
-							<option value="built-in">Test Dataset</option>
+							{hasLocalDb.current && <option value="built-in">Test Dataset</option>}
 						</Form.Control>
 					</Form.Group>
 
@@ -232,6 +260,24 @@ function QueryTester(props) {
 					
 					</div>
 				}
+
+
+				{sqlState === "data_loaded" && dataSummary && !showDataDetail &&
+					 <div className="m-2"><a href="#" onClick={e => handleToggleDetail(e, true)}>show detail</a></div>
+				}
+				
+				{sqlState === "data_loaded" && dataSummary && showDataDetail && <div className="mx-4">
+					<Table size="sm">
+						<thead><tr className="font-weight-bold"><td>Resource</td><td className="text-right">Records</td></tr></thead>
+						<tbody>
+							{dataSummary.map( table => <tr key={table[0]}>
+								<td>{table[0]}</td>
+								<td className="text-right">{table[1].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
+							</tr>)}
+						</tbody>
+					</Table>
+					<a href="#" onClick={handleToggleDetail} className="mt-1">hide detail</a>
+				</div>}
 
 				{(sqlState === "loading_sqlite" || sqlState === "loading_data" || sqlState === "running_query") &&
 					<div className="my-2 text-center">
