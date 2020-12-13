@@ -111,8 +111,7 @@
           },
           {
             "name": "comparator",
-            "type": "STRING",
-            "mode": "REPEATED"
+            "type": "STRING"
           },
           {
             "name": "id",
@@ -150,8 +149,7 @@
           },
           {
             "name": "comparator",
-            "type": "STRING",
-            "mode": "REPEATED"
+            "type": "STRING"
           },
           {
             "name": "id",
@@ -2362,8 +2360,7 @@
           },
           {
             "name": "comparator",
-            "type": "STRING",
-            "mode": "REPEATED"
+            "type": "STRING"
           },
           {
             "name": "id",
@@ -2401,8 +2398,7 @@
           },
           {
             "name": "comparator",
-            "type": "STRING",
-            "mode": "REPEATED"
+            "type": "STRING"
           },
           {
             "name": "id",

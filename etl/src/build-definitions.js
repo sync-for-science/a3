@@ -7,6 +7,10 @@ const buildBundle = (bundle) => {
 		.forEach( sd => {
 
 			if (sd.resource.kind !== "complex-type" && sd.resource.kind !== "resource") return;
+
+			//ignore profiled types (eg. SimpleQuantity) since will build the Quantity schema
+			if (sd.resource.name !== sd.resource.type) return;
+
 			if (sd.resource.kind === "resource") {
 				resourceNames.push(sd.resource.name);
 				//resourceType doesn't seem to be a field anywhere?
@@ -20,7 +24,7 @@ const buildBundle = (bundle) => {
 				if (!elem.type && elem.contentReference) {
 					definitions[elem.path] = {
 						type: "ContentReference", 
-						isArray: elem.max !== "1", 
+						isArray: elem.max !== "1" && elem.max !== "0", 
 						contentReference: elem.contentReference.slice(1)
 					}
 				}
@@ -30,7 +34,7 @@ const buildBundle = (bundle) => {
 						? elem.path
 						: elem.path.replace("[x]", type.code[0].toUpperCase() + type.code.slice(1));
 					const outputType = type.code === "http://hl7.org/fhirpath/System.String" ? "fhirid" : type.code;
-					const isArray =  elem.max !== "1";
+					const isArray =  elem.max !== "1" && elem.max !== "0";
 					const referenceTargets = type.targetProfile &&
 						type.targetProfile.map( profile => profile.split("/")[profile.split("/").length-1] );
 					definitions[path] = {type: outputType, isArray, referenceTargets};
