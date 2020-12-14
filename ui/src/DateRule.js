@@ -45,7 +45,7 @@ function DateRule(props) {
 	};
 
 	const renderHeader = () => <div className="my-2">
-		<span className="mr-1 font-weight-bold">{props.fieldDefinition.name}</span>
+		<span className="mr-1 font-weight-bold">{props.fieldDefinition.name || props.fieldDefinition.id}</span>
 		<span>is</span>
 		{!props.hideControls && <FontAwesomeIcon 
 			icon={faTrashAlt} opacity="0.5"
@@ -130,7 +130,7 @@ function DateRule(props) {
 			}
 			
 			<div style={{lineHeight: 2}}>
-				<span className="mt-1 mr-1 font-weight-bold">{props.fieldDefinition.name}</span>
+				<span className="mt-1 mr-1 font-weight-bold">{props.fieldDefinition.name || props.fieldDefinition.id}</span>
 				<span className="mt-1 mr-1">is</span>
 				<span className="mt-1 mr-1 mark">
 					{findOption("comparator", props.data.comparator).toLowerCase()}

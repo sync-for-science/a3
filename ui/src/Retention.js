@@ -13,11 +13,11 @@ function Retention(props) {
 		{name: `Retain all matching ${props.definition.name} values`, value: "all"}
 	].concat(
 		_.chain(props.definition.fields)
-			.filter( f => f.type === "instant" )
+			.filter( f => f.type === "date" )
 			.sortBy( "name" )
 			.map( f => [
-				{name: "Retain most recent match based on " + f.name , value: "latest."+f.name},
-				{name: "Retain earliest match based on " + f.name , value: "earliest."+f.name}
+				{name: "Retain most recent match based on " + (f.name || f.id) , value: "latest."+f.id},
+				{name: "Retain earliest match based on " + (f.name || f.id) , value: "earliest."+f.id}
 			]).flatten().value()
 	);
 

@@ -1,30 +1,32 @@
 import React, {useState} from "react";
 import _ from "lodash";
-import { Button, DropdownButton, Dropdown } from "react-bootstrap";
+import { Button, DropdownButton, Dropdown, Badge, Row, Col } from "react-bootstrap";
 import { useStoreon } from "storeon/react";
 import BlockEditor from "./BlockEditor";
 
 function BlockChart(props) {
 
-	const { dispatch, blocks, definitions } = useStoreon("blocks", "definitions");
+	const { dispatch, blocks, definitions, patients } = useStoreon("blocks", "definitions", "patients");
 	const [activeInstance, setActiveInstance] = useState();
-	// const [activeInstance, setActiveInstance] = useState({id: 2, parentId: 0});
 	let cells = {};
 
 	const blockList = blocks.concat(
 		blocks.filter( b => {
 			return !blocks.find( node => node.parentId === b.id )
 		}).map( b => {
-			return {id: b.id+"-end", name: b.exclude? "Exclude" : "Include", parentId: b.id, isLeaf:true}
+			return {id: b.id+"-end", name: b.exclude? "Exclude" : "Include", parentId: b.id, isLeaf:true, patients: patients}
 		})
 	)
-
 	const walkUp = (id, span=1) => {
 		const node = blockList.find( b => b.id === id );
 		if (cells[id]) {
 			cells[id].span = cells[id].span + span;
 		} else {
-			cells[id] = {id, span, name: node.name, retention: node.retention, parentId: node.parentId, isLeaf: node.isLeaf}
+			cells[id] = {
+				id, span, name: node.name, retention: node.retention, 
+				parentId: node.parentId, isLeaf: node.isLeaf,
+				patients: node.patients
+			}
 		}
 		if (node && node.parentId !== null) walkUp(node.parentId, span)
 
@@ -111,8 +113,13 @@ function BlockChart(props) {
 					} else if (cell.id !=="root" && !cell.isLeaf) {
 						setActiveInstance({id: cell.id, parentId: cell.parentId})
 					};
-				}}>{name}</button>
+				}}>
+					{name}
+				</button>
 				
+				{ cell.patients !== undefined && <div>
+					<Badge variant="primary" size="sm">{cell.patients} {cell.patients !== 1 ? "Patients" : "Patient"}</Badge>
+				</div> }
 			</div>
 		</td>;
 	}
@@ -143,32 +150,13 @@ function BlockChart(props) {
 
 		block.retention && block.retention.retentionVar && 
 			block.definition.fields.forEach( field => {
-				if (field.type === "composite") {
-					block.rules.forEach( rule => {
-						rule.ruleSet.forEach( rs => {
-							if (!rs.name) return;
-							field.fields.forEach( childField => {
-								relativeOptions.push({
-									retentionVar: block.retention.retentionVar,
-									compositeName: rs.name,
-									fieldType: childField.type,
-									fieldName: childField.name,
-									value: [block.id, rs.name, childField.name].join("."),
-									label: [block.retention.retentionVar, rs.name, childField.name].join(".")
-								})
-							})
-						})
-					})
-				}
-				if (field.type !== "composite") {
-					relativeOptions.push({
-						retentionVar: block.retention.retentionVar,
-						fieldType: field.type,
-						fieldName: field.name,
-						value: [block.id, field.name].join("."),
-						label: [block.retention.retentionVar, field.name].join(".")
-					})
-				}
+				relativeOptions.push({
+					retentionVar: block.retention.retentionVar,
+					fieldType: field.type,
+					fieldName: field.name || field.id,
+					value: [block.id, field.id].join("."),
+					label: [block.retention.retentionVar, field.name || field.id].join(".")
+				})
 			});
 		
 		return block.parentId !== null
@@ -190,6 +178,17 @@ function BlockChart(props) {
 
 		const relativeOptions = data.parentId !== null ? getRelativeOptions(activeInstance.parentId, blocks) : [];
 
+		const isReferenced = blocks.find( b => {
+			return b.rules && b.rules.find( r => {
+				return r.restrictions && r.restrictions.find( rs => {
+					return (rs.compareTo && rs.compareTo.split(".")[0] === activeInstance.id.toString()) ||
+						(rs.target && rs.target.split(".")[0] === activeInstance.id.toString())
+				})
+			})
+		});
+
+		console.log(isReferenced)
+
 		return <BlockEditor 
 			id={activeInstance.id}
 			parentId={activeInstance.parentId}
@@ -200,14 +199,16 @@ function BlockChart(props) {
 			relativeOptions={relativeOptions}
 			onSave={saveBlock}
 			onDelete={deleteBlock}
+			isReferenced={!!isReferenced}
 		/>
 	}
 
 	return <div>
-		<div className="container-fluid split"><table className="m-4"><tbody>
-			{ _.range(1, rowCount+1).map( renderRow )}
-		</tbody></table></div>
-		{ activeInstance && renderModal() }
+		<div className="container-fluid split">
+			<table className="m-4"><tbody>
+				{ _.range(1, rowCount+1).map( renderRow )}
+			</tbody></table></div>
+			{ activeInstance && renderModal() }
 	</div>
 	
 

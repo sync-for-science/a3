@@ -1,12 +1,11 @@
 import React, {useState} from "react";
 import DateRule, {defaultDateProperties} from "./DateRule";
 import CodingRule, { defaultCodingProperties } from "./CodingRule";
-import CompositeRule from "./CompositeRule";
 import {Button, ListGroup, ListGroupItem }  from "react-bootstrap";
 import IdRule from "./IdRule";
 import QuantityRule, { defaultQuantityProperties } from "./QuantityRule";
 
-function RuleSet(props) {
+function Restrictions(props) {
 
 	const [edit, setEdit] = useState(props.edit);
 
@@ -42,8 +41,8 @@ function RuleSet(props) {
 	}
 		
 	const renderRule = (ruleData, i) => {
-		if (props.fieldDefinition.type === "instant") {
-			const relativeOptions = (props.relativeOptions||[]).filter( r => r.fieldType === "instant" );
+		if (props.fieldDefinition.type === "date") {
+			const relativeOptions = (props.relativeOptions||[]).filter( r => r.fieldType === "date" );
 			return <DateRule 
 				data={ruleData} 
 				fieldDefinition={props.fieldDefinition} 
@@ -53,19 +52,11 @@ function RuleSet(props) {
 				onDelete={e => handleDeleteRule(i)}
 				hideControls={!edit && i > 0}
 			/>
-		} else if (props.fieldDefinition.type === "coding") {
+		} else if (props.fieldDefinition.type === "coding" || props.fieldDefinition.type === "code") {
 			return <CodingRule 
 				data={ruleData} 
 				fieldDefinition={props.fieldDefinition} 
-				edit={edit}
-				onUpdate={data => handleUpdateRule(i, data)}
-				onDelete={e => handleDeleteRule(i)}
-				hideControls={!edit && i > 0}
-			/>
-		} else if (props.fieldDefinition.type === "composite") {
-			return <CompositeRule
-				data={ruleData} 
-				fieldDefinition={props.fieldDefinition} 
+				isCode = {props.fieldDefinition.type === "code"}
 				edit={edit}
 				onUpdate={data => handleUpdateRule(i, data)}
 				onDelete={e => handleDeleteRule(i)}
@@ -123,16 +114,11 @@ function RuleSet(props) {
 
 
 function getRuleDefaults(fieldDefinition, ruleData={}) {
-	if (fieldDefinition.type === "composite") {
-		const children = fieldDefinition.fields.map( (field, i) => {
-			return getRuleDefaults(field, (ruleData && ruleData[i]) || {});
-		});
-		return {children};
-	} else if (fieldDefinition.type === "instant") {
+	if (fieldDefinition.type === "date") {
 		return  {invalid: false, ...defaultDateProperties(), ...(fieldDefinition.defaults || {}), ...ruleData};
 	} else if (fieldDefinition.type === "quantity") {
 		return  {invalid: false, ...defaultQuantityProperties(), ...(fieldDefinition.defaults || {}), ...ruleData};
-	} else if (fieldDefinition.type === "coding") {
+	} else if (fieldDefinition.type === "coding" || fieldDefinition.type === "code") {
 		return  {invalid: true, ...defaultCodingProperties(), ...(fieldDefinition.defaults || {}), ...ruleData};
 	} else {
 		return  {invalid: true, ...(fieldDefinition.defaults || {}), ...ruleData};
@@ -140,5 +126,5 @@ function getRuleDefaults(fieldDefinition, ruleData={}) {
 }
 
 
-export default RuleSet;
+export default Restrictions;
 export {getRuleDefaults} ;

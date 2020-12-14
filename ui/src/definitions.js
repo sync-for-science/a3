@@ -1,10 +1,10 @@
 export default [{
 	"name": "Lab Result - Numerical",
 	"version": "1.0.0.alpha",
+	"tableName": "Observation",
+	"patientIdField": "subject.reference_id_aa",
 	"fields": [
-		{"name": "patient", "type": "fhirId", "field": "ptId", "exprSuffix": "subject.type = 'Patient'"},
-		{"name": "id", "type": "fhirId", "field": "rId"},
-		{"name": "status", "type": "coding", "field": "status", "editable": false,
+		{"id": "status", "type": "code", "field": "status", "editable": true,
 			"options": [
 				{"values": [{"code": "registered"}], "name": "Registered"},
 				{"values": [{"code": "preliminary"}], "name": "Preliminary"},
@@ -16,11 +16,12 @@ export default [{
 				{"values": [{"code": "unknown"}], "name": "Unknown"}
 			]
 		},
-		{"name": "effectiveDateTimeStart", "type": "instant", "field": "effectiveDateTimeStart"},
-		{"name": "effectiveDateTimeEnd", "type": "instant", "field": "effectiveDateTimeEnd"},
-		{"name": "valueQuantity", "type": "quantity", "field": "valueQuantity"},
-		{"name": "code", "type": "coding", "field": "code"},
-		{"name": "dataAbsentReason", "type": "coding", "field": "dataAbsentReason", "editable": true,
+		{"id": "id", "type": "fhirId", "field": "id"},
+		{"id": "effectiveDateTimeStart", "type": "date", "field": "effectiveDateTime_aa.start"},
+		{"id": "effectiveDateTimeEnd", "type": "date", "field": "effectiveDateTime_aa.end"},
+		{"id": "valueQuantity", "type": "quantity", "field": "valueQuantity"},
+		{"id": "code", "type": "coding", "field": "code.coding[]"},
+		{"id": "dataAbsentReason", "type": "coding", "field": "dataAbsentReason.coding", "editable": true,
 			"options": [
 				{"values": [{"code": "unknown"}], "name": "Unknown"},
 				{"values": [{"code": "asked-unknown"}], "name": "-  Asked But Unknown"},
@@ -43,10 +44,11 @@ export default [{
 },{
 	"name": "Condition",
 	"version": "1.0.0.alpha",
+	"tableName": "Condition",
+	"patientIdField": "subject.reference_id_aa",
 	"fields": [
-		{"name": "patient", "type": "fhirId", "field": "ptId", "exprSuffix": "subject.type = 'Patient'"},
-		{"name": "id", "type": "fhirId", "field": "rId"},
-		{"name": "clinicalStatus", "type": "coding", "field": "clinicalStatus", "editable": false,
+		{"id": "id", "type": "fhirId", "field": "id"},
+		{"id": "clinicalStatus", "type": "coding", "field": "clinicalStatus.coding[]", "editable": false,
 			"options": [
 				{"values": [{"code": "active"}], "name": "Active"},
 				{"values": [{"code": "recurrence"}], "name": "- Recurrence"},
@@ -56,7 +58,7 @@ export default [{
 				{"values": [{"code": "resolved"}], "name": "- Resolved"},
 			]
 		},
-		{"name": "verificationStatus", "type": "coding", "field": "verificationStatus", "editable": false,
+		{"id": "verificationStatus", "type": "coding", "field": "verificationStatus.coding[]", "editable": false,
 			"options": [
 				{"values": [{"code": "unconfirmed"}], "name": "Unconfirmed"},
 				{"values": [{"code": "provisional"}], "name": "- Provisional"},
@@ -66,22 +68,22 @@ export default [{
 				{"values": [{"code": "entered-in-error"}], "name": "Entered in Error"},
 			]
 		},
-		{"name": "category", "type": "coding", "field": "category", "editable": false,
+		{"id": "category", "type": "coding", "field": "category[].coding[]", "editable": false,
 			"options": [
 				{"values": [{"code": "problem-list-item"}], "name": "Problem List Item"},
 				{"values": [{"code": "encounter-diagnosis"}], "name": "Encounter Diagnosis"},
 				{"values": [{"code": "health-concern"}], "name": "Health Concern"},
 			]
 		},
-		{"name": "code", "type": "coding", "field": "code"}
+		{"id": "code", "type": "coding", "field": "code.coding[]"}
 	]
 },{
 	"name": "Demographics",
 	"version": "1.0.0.alpha",
+	"tableName": "Patient",
+	"patientIdField": "id",
 	"fields": [
-		{"name": "patient", "type": "fhirId", "field": "id"},
-		{"name": "id", "type": "fhirId", "field": "rId"},
-		{"name": "gender", "type": "coding", "field": "gender", "editable": false,
+		{"id": "gender", "type": "code", "field": "gender", "editable": false,
 			"options": [
 				{"values": [{"code": "male"}], "name": "Male"},
 				{"values": [{"code": "female"}], "name": "Female"},
@@ -89,9 +91,19 @@ export default [{
 				{"values": [{"code": "unknown"}], "name": "Unknown"},
 			]
 		},
-		{"name": "birthDate", "type": "instant", "field": "birthDate"},
-		{"name": "usCoreRace", "type": "coding", "field": "usCoreRace"},
-		{"name": "usCoreEthnicity", "type": "coding", "field": "usCoreEthnicity"},
+		{"id": "birthDate", "type": "date", "field": "birthDate"},
+		// {"name": "US Core Race (OMB Category)", "id": "us-race", "type": "coding", "field": "extension[].valueCoding", 
+		// 	"staticFields": [{
+		// 		"field": "extension[].url",
+		// 		"value": " http://hl7.org/fhir/us/core/StructureDefinition/us-core-race/ombCategory"
+		// 	}]
+		// },
+		// {"name": "US Core Ethnicity (OMB Category)", "id": "us-ethnicity", "type": "coding", "field": "extension[].valueCoding", 
+		// 	"staticFields": [{
+		// 		"field": "extension[].url",
+		// 		"value": " http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity/ombCategory"
+		// 	}]
+		// },
 
 	]
 

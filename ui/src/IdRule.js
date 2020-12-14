@@ -13,7 +13,7 @@ function IdRule(props) {
 	const renderEdit = () => {
 		return <div>
 			<div className="my-2">
-				<span className="mr-1 font-weight-bold">{props.fieldDefinition.name}</span>
+				<span className="mr-1 font-weight-bold">{props.fieldDefinition.name || props.fieldDefinition.id}</span>
 				<span>is equal to</span>
 				{!props.hideControls && <FontAwesomeIcon icon={faTrashAlt} opacity="0.5"
 					onClick={e => props.onDelete(props.id)} 
@@ -42,7 +42,7 @@ function IdRule(props) {
 				<FontAwesomeIcon icon={faEdit} opacity="0.5" style={{cursor: "pointer"}} pull="right" className="m-1" />
 			}
 			<div style={{lineHeight: 2, paddingLeft: "24px", textIndent: "-24px"}}>
-				<span className="mr-1 font-weight-bold">{props.fieldDefinition.name}</span>
+				<span className="mr-1 font-weight-bold">{props.fieldDefinition.name || props.fieldDefinition.id}</span>
 				<span className="mr-1">is equal to</span>
 				<span className="mr-1 mark">{targetLabel}</span>
 			</div>

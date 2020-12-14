@@ -18,15 +18,16 @@
     "storeon": "^3.0.3"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
   },
-  "homepage": "/a3",
+  "homepage": "/",
   "browserslist": {
     "production": [
       ">0.2%",
@@ -38,5 +39,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "better-sqlite3": "^7.1.1",
+    "copy-webpack-plugin": "^6.3.1",
+    "lodash": "^4.17.20",
+    "react-app-rewired": "^2.1.6",
+    "source-map-explorer": "^2.5.0"
   }
 }
