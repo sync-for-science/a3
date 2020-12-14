@@ -117,9 +117,15 @@ function BlockChart(props) {
 					{name}
 				</button>
 				
-				{ cell.patients !== undefined && <div>
+				{ cell.patients !== undefined && !cell.isLeaf && <div>
 					<Badge variant="primary" size="sm">{cell.patients} {cell.patients !== 1 ? "Patients" : "Patient"}</Badge>
 				</div> }
+
+				{ cell.patients !== undefined && cell.isLeaf && <div>
+					<Badge variant="success" size="sm">Cohort:<br/>{cell.patients} {cell.patients !== 1 ? "Patients" : "Patient"}</Badge>
+				</div> }
+
+
 			</div>
 		</td>;
 	}
