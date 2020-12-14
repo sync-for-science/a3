@@ -19,6 +19,7 @@ jobs:
       env:
         CI: ""
       run: |
+        ./create-sample-db.sh
         npm install
         npm run-script build
 
