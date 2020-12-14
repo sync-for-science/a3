@@ -61,7 +61,6 @@ A3 Annotations:
 - Extensions (eg. may be nested with relative urls making querying difficult). [Details](algorithm.md#extensions-and-modifier-extensions)
 - Recursive Structures (eg. some structures can be infinitely recursive and need to be truncated to be stored in a queryable format). [Details](algorithm.md#recursive-structures)
 - Address (eg. postal standardization and geocoding) - not currently implemented in prototype. [Details](algorithm.md#address---not-currently-implemented-in-prototype)
-- Aggregations (eg. drug and device exposure eras) - not currently implemented in prototype.
 
 Other transformations that may be applied as stages in the pipeline in conjunction with A3 include NLP to convert clinical notes to structured FHIR data, terminology expansion to insert additional identifiers, de-identification (Microsoft has recently released an open source bulk data tool for this at https://github.com/microsoft/FHIR-Tools-for-Anonymization), validation (for example, the NLM LOINC to unit validator at https://github.com/lhncbc/loinc-mapping-validator), matching patients and providers to master patient and provider indexes and adding these identifiers to the FHIR resources, and even ML based risk scoring.
 

@@ -125,12 +125,10 @@ A few FHIR structures can be infinitely nested and need to be limited to fit in 
 
 If needed, primitive extensions could be flattened using a similar approach to that described above for other extensions.
 
-## Drug Exposure Eras (via post load updated queries) - not currently implemented in prototype
-
-* TODO: possible base on approach in OMOP
 
 ## Open Questions
 
 1. Is it worth grouping similar choice types (eg. date, dateTime, instant) into one type for querying or should this be handled by the query generator checking for the existence of each type?
 2. Support inclusion of timezone offset extension (https://www.hl7.org/fhir/extension-tz-offset.json.html) on date and time elements rather than assuming UTC?
 3. Build schema for each upload and tailor to data or build general purpose schema (as is currently done)? Pro: would transparently support extensions and primitive extensions. Con: clients would have to check if fields exists prior to querying.
+4. Is performance sufficient to do interval packing via window queries or does aggregation need to be done as a transformation on load (eg. merging multiple medication orders into a drug exposure "era")?
